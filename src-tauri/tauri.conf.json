@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "windthemes",
-        "width": 800,
-        "height": 600
+        "title": "windThemes",
+        "width": 400,
+        "height": 400
       }
     ],
     "security": {
