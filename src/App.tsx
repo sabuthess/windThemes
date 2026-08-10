@@ -1,50 +1,79 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import { confirm } from "@tauri-apps/plugin-dialog";
+import { load } from "@tauri-apps/plugin-store";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [formValue, setFormValue] = useState({
+    dark: "",
+    light: "",
+  });
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const handleSubmit = async (event: React.SubmitEvent) => {
+    event.preventDefault();
+
+    const store = await load("store.json", { autoSave: false });
+    const confirmation = await confirm("You are sure?", {
+      title: "Tauri",
+      kind: "warning",
+    });
+
+    await store.set("light-time", { value: formValue.light });
+    await store.set("dark-time", { value: formValue.dark });
+
+    if (confirmation) {
+      await store.save();
+      await confirm("Times saved succesfully", {
+        title: "Tauri",
+        kind: "info",
+      });
+    } else {
+      await confirm("Times don't saved ", {
+        title: "Tauri",
+        kind: "info",
+      });
+    }
+  };
+
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValue({
+      ...formValue,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleClick = async () => {
+    console.log(formValue);
+  };
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <>
+      <h1>windThemes</h1>
+      <p>Select time for your themes</p>
+      <form action="" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="light-time">Light</label>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+          <input
+            name="light"
+            type="time"
+            id="light-time"
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="dark-time">Dark</label>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
+          <input
+            name="dark"
+            type="time"
+            id="dark-time"
+            onChange={handleChange}
+          />
+        </div>
+        <button onClick={handleClick}>Save</button>
       </form>
-      <p>{greetMsg}</p>
-    </main>
+    </>
   );
 }
 
