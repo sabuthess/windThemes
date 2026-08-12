@@ -20,6 +20,11 @@
           "name": "taskkill",
           "cmd": "taskkill.exe",
           "args": true
+        },
+        {
+          "name": "explorer",
+          "cmd": "explorer.exe",
+          "args": true
         }
       ]
     }
