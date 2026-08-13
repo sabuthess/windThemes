@@ -22,7 +22,7 @@
           "args": true
         },
         {
-          "name": "explorer",
+          "name": "explorer.exe",
           "cmd": "explorer.exe",
           "args": true
         }
