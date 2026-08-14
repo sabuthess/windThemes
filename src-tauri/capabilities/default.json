@@ -26,10 +26,8 @@
           "cmd": "explorer.exe",
           "args": true
         },
-        {
-          "name": "binaries/darkmode",
-          "sidecar": true
-        }
+        { "name": "binaries/ligh_mode", "sidecar": true },
+        { "name": "binaries/dark_mode", "sidecar": true }
       ]
     }
   ]
