@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./App.css";
 import { confirm } from "@tauri-apps/plugin-dialog";
-import { load } from "@tauri-apps/plugin-store";
 import { invoke } from "@tauri-apps/api/core";
 
 function App() {
@@ -14,7 +13,6 @@ function App() {
     event.preventDefault();
 
     try {
-      const store = await load("store.json", { autoSave: false });
 
       const confirmation = await confirm("You are sure?", {
         title: "Tauri",
@@ -28,12 +26,6 @@ function App() {
         });
         return;
       }
-
-      await store.set("light-time", { value: formValue.light });
-      await store.set("dark-time", { value: formValue.dark });
-      await store.save();
-
-      await invoke("dark_mode", { hora: formValue.dark });
       await invoke("light_mode", { hora: formValue.light });
     } catch (error) {
       console.error("Error:", error);
