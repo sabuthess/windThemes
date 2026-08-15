@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { load } from "@tauri-apps/plugin-store";
+import { invoke } from "@tauri-apps/api/core";
 
 function App() {
   const [formValue, setFormValue] = useState({
@@ -12,38 +13,37 @@ function App() {
   const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
 
-    const store = await load("store.json", { autoSave: false });
-    const confirmation = await confirm("You are sure?", {
-      title: "Tauri",
-      kind: "warning",
-    });
+    try {
+      const store = await load("store.json", { autoSave: false });
 
-    await store.set("light-time", { value: formValue.light });
-    await store.set("dark-time", { value: formValue.dark });
+      const confirmation = await confirm("You are sure?", {
+        title: "Tauri",
+        kind: "warning",
+      });
 
-    if (confirmation) {
+      if (!confirmation) {
+        await confirm("Times don't saved", {
+          title: "Tauri",
+          kind: "info",
+        });
+        return;
+      }
+
+      await store.set("light-time", { value: formValue.light });
+      await store.set("dark-time", { value: formValue.dark });
       await store.save();
-      await confirm("Times saved succesfully", {
-        title: "Tauri",
-        kind: "info",
-      });
-    } else {
-      await confirm("Times don't saved ", {
-        title: "Tauri",
-        kind: "info",
-      });
+
+      await invoke("dark_mode", { hora: formValue.dark });
+      await invoke("light_mode", { hora: formValue.light });
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
-
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValue({
       ...formValue,
       [event.target.name]: event.target.value,
     });
-  };
-
-  const handleClick = async () => {
-    console.log(formValue);
   };
 
   return (
@@ -71,7 +71,7 @@ function App() {
             onChange={handleChange}
           />
         </div>
-        <button onClick={handleClick}>Save</button>
+        <button>Save</button>
       </form>
     </>
   );
