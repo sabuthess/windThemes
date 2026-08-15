@@ -25,7 +25,7 @@ function App() {
         });
         return;
       }
-      await invoke("dark_mode", { hora: formValue.light });
+      await invoke("dark_mode", { hora: formValue.dark });
       await invoke("light_mode", { hora: formValue.light });
     } catch (error) {
       console.error("Error:", error);
