@@ -4,7 +4,7 @@ fn dark_mode(hora: String) -> Result<(), String> {
         .map_err(|e| e.to_string())?
         .parent()
         .ok_or("no se pudo resolver la carpeta")?
-        .join("dark_mode-x86_64-pc-windows-msvc.EXE");
+        .join("dark_mode.exe");
 
     let ruta_str = format!("\"{}\"", ruta_bat.to_str().ok_or("ruta inválida")?);
 
@@ -29,7 +29,7 @@ fn light_mode(hora: String) -> Result<(), String> {
         .map_err(|e| e.to_string())?
         .parent()
         .ok_or("no se pudo resolver la carpeta")?
-        .join("light_mode-x86_64-pc-windows-msvc.EXE");
+        .join("light_mode.exe");
 
     let ruta_str = format!("\"{}\"", ruta_bat.to_str().ok_or("ruta inválida")?);
 
