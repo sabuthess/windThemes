@@ -13,7 +13,6 @@ function App() {
     event.preventDefault();
 
     try {
-
       const confirmation = await confirm("You are sure?", {
         title: "Tauri",
         kind: "warning",
@@ -26,6 +25,7 @@ function App() {
         });
         return;
       }
+      await invoke("dark_mode", { hora: formValue.light });
       await invoke("light_mode", { hora: formValue.light });
     } catch (error) {
       console.error("Error:", error);
